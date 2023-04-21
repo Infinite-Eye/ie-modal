@@ -1,0 +1,17 @@
+{
+  "name": "infinite-eye/modal",
+  "type": "project",
+  "version": "0.0.1",
+  "autoload": {
+    "psr-4": {
+      "InfiniteEye\\Modal\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "James",
+      "email": "james@infinite-eye.com"
+    }
+  ],
+  "require": {}
+}
