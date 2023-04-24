@@ -12,7 +12,7 @@ Add dependencies to composer.json file, and install with composer.json
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/Infinite-Eye/ie-modal.git"
+      "url": "https://github.com/Infinite-Eye/modal.git"
     }
   ],
   "require": {
