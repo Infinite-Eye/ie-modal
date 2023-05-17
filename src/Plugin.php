@@ -51,12 +51,12 @@ class Plugin
         $asset_url = $this->get_asset_url();
 
         // vendor
-        wp_enqueue_style('jquery-modal', $asset_url . '/js/jquery.modal.min.css', $this->_version);
+        wp_enqueue_style('jquery-modal', $asset_url . '/css/jquery.modal.min.css', $this->_version);
         wp_enqueue_script('jquery-modal', $asset_url . '/js/jquery.modal.min.js', ['jquery'], $this->_version);
         wp_enqueue_script('js-cookie', $asset_url . '/js/js-cookie.js', [], $this->_version);
 
         // plugin
-        wp_enqueue_style('infinite-eye-modal', $asset_url . '/js/modal.css', $this->_version);
+        wp_enqueue_style('infinite-eye-modal', $asset_url . '/css/modal.css', $this->_version);
         wp_enqueue_script('infinite-eye-modal', $asset_url . '/js/modal.js', ['jquery-modal', 'js-cookie'], $this->_version);
 
         $args = [];
