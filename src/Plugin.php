@@ -29,6 +29,7 @@ class Plugin
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_action('wp_footer', [$this, 'render_modals']);
+        add_action('wp_footer', [$this, 'before_footer_scripts'], 5);
     }
 
     /**
@@ -43,21 +44,26 @@ class Plugin
 
     public function enqueue_scripts()
     {
-        $modals = $this->get_active_modals();
-        if (empty($modals)) {
-            return;
-        }
+        // $modals = $this->get_active_modals();
+        // if (empty($modals) && !apply_filters('ie/modal/enqueue_scripts', true)) {
+        //     return;
+        // }
 
         $asset_url = $this->get_asset_url();
 
         // vendor
-        wp_enqueue_style('jquery-modal', $asset_url . '/css/jquery.modal.min.css', $this->_version);
-        wp_enqueue_script('jquery-modal', $asset_url . '/js/jquery.modal.min.js', ['jquery'], $this->_version);
-        wp_enqueue_script('js-cookie', $asset_url . '/js/js-cookie.js', [], $this->_version);
+        wp_enqueue_style('jquery-modal', $asset_url . '/css/jquery.modal.min.css', [], $this->_version);
+        wp_enqueue_script('jquery-modal', $asset_url . '/js/jquery.modal.min.js', ['jquery'], $this->_version, true);
+        wp_enqueue_script('js-cookie', $asset_url . '/js/js-cookie.js', [], $this->_version, true);
 
         // plugin
-        wp_enqueue_style('infinite-eye-modal', $asset_url . '/css/modal.css', $this->_version);
-        wp_enqueue_script('infinite-eye-modal', $asset_url . '/js/modal.js', ['jquery-modal', 'js-cookie'], $this->_version);
+        wp_enqueue_style('infinite-eye-modal', $asset_url . '/css/modal.css', [], $this->_version, true);
+        wp_enqueue_script('infinite-eye-modal', $asset_url . '/js/modal.js', ['jquery-modal', 'js-cookie'], $this->_version, true);
+    }
+
+    public function before_footer_scripts()
+    {
+        $modals = $this->get_active_modals();
 
         $args = [];
         foreach ($modals as $modal) {
@@ -76,6 +82,7 @@ class Plugin
                 'args' => (object)$modal->get_plugin_args()
             ];
         }
+
         wp_localize_script('infinite-eye-modal', 'modal_config', $args);
     }
 
@@ -86,15 +93,18 @@ class Plugin
             return;
         }
 
+
         foreach ($modals as $modal) {
 
             if (!$modal->is_visible()) {
                 continue;
             }
 
+            echo '<!-- OPEN -->' . "\n";
             echo $this->get_template_part('modal-open', ['id' => $modal->get_id()]);
             $modal->the_content();
             echo $this->get_template_part('modal-close');
+            echo '<!-- CLOSE -->' . "\n";
         }
     }
 
@@ -105,10 +115,12 @@ class Plugin
 
     public function get_template_part($template, $args = [])
     {
-        $found = locate_template('template-parts/modal/' . $template . '.php', true, false, $args);
+        $found = locate_template(wp_normalize_path('template-parts/modal/' . $template . '.php'), true, false, $args);
         if (!$found) {
-            load_template(dirname($this->get_asset_path()) . '/templates/' . $template . '.php', true, $args);
+            $found = locate_template(wp_normalize_path(dirname($this->get_asset_path()) . '/templates/' . $template . '.php'), true, false, $args);
         }
+
+        load_template(wp_normalize_path(dirname($this->get_asset_path()) . '/templates/' . $template . '.php'), false, $args);
     }
 
     public function get_asset_path()
