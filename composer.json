@@ -1,7 +1,7 @@
 {
   "name": "infinite-eye/modal",
   "type": "project",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "autoload": {
     "psr-4": {
       "InfiniteEye\\Modal\\": "src/"
